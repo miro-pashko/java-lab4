@@ -1,6 +1,8 @@
 package cage;
 
 import animal.Animal;
+import exception.AnimalNotInCageException;
+import exception.CageFullException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +47,30 @@ public abstract class Cage<T extends Animal> {
         return Collections.unmodifiableList(animals);
     }
 
+    /**
+     * Places an animal into this enclosure.
+     *
+     * @throws CageFullException if every space is already occupied
+     */
+    public void placeAnimal(T animal) {
+        if (getOccupiedSpaces() >= maxCapacity) {
+            throw new CageFullException(
+                    label + " has no free space (capacity " + maxCapacity + ").");
+        }
+        animals.add(animal);
+    }
 
+    /**
+     * Removes an animal from this enclosure.
+     *
+     * @throws AnimalNotInCageException if the animal is not currently in this enclosure
+     */
+    public void removeAnimal(T animal) {
+        if (!animals.remove(animal)) {
+            throw new AnimalNotInCageException(
+                    animal + " is not in " + label + ".");
+        }
+    }
 
     @Override
     public String toString() {
